@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diffie-Hellman Simulator</title>
+    <link rel="stylesheet" href="styles/style.css">
+</head>
+<body>
+    <h1>Diffie-Hellman Key Exchange</h1>
+
+    <div>
+        <h3>Inputs</h3>
+
+        <label for="prime">Prime (p):</label><br><br>
+        <input type="number" id="p"><br><br>
+
+        <label for="generator">Generator (g):</label><br><br>
+        <input type="number" id="g"><br><br>
+
+        <label for="alicePrivate">Alice's Private Key (a):</label><br><br>
+        <input type="number" id="alicePrivate"><br><br> 
+
+        <label for="bobPrivate">Bob's Private Key (b):</label><br><br>
+        <input type="number" id="bobPrivate"><br><br>
+    </div>
+
+    <div>
+        <button id="generateKeys">Generate Keys</button>
+        <button id="generateSecret">Generate Secret Keys</button>
+    </div>
+
+    <div>
+        <h3>Outputs</h3>
+
+        <p>Alice's Public Key (A): <span id="alicePublic"></span></p>
+        <p>Bob's Public Key (B): <span id="bobPublic"></span></p>
+        
+        <p>Shared secret: <span id="secret"></span></p>
+    </div>
+    
+    <script src="app.js"></script>
+</body>
+</html>
