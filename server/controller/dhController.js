@@ -3,6 +3,10 @@ const {modExp} = require("../utils/dhMath");
 const generatePublicKeys = (req, res) => {
     const {p, g, a, b} = req.body;
 
+    if (!p || !g || !a || !b) {
+        return res.status(400).json({ error: "Missing parameters" });
+    }
+    
     const A = modExp(g,a,p);
     const B = modExp(g,b,p);
 

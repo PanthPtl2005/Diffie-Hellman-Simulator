@@ -17,6 +17,21 @@ btn_keys.addEventListener("click", async() => {
     const a = a_Input.value;
     const b = b_Input.value;
 
+    if(!p ||  !g || !a || !b){
+        alert("all fields are required.");
+        return;
+    }
+
+    if(p <= 1 || g <= 1){
+        alert("invalid p or g");
+        return;
+    }
+
+    if (p > 1000000) {
+        alert("Use smaller value of (p) for simulation");
+        return;
+    }
+
     const response = await fetch("http://localhost:5000/api/dh/generate-public", {
         method : "POST",
         headers: {
