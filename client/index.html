@@ -3,42 +3,137 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Diffie-Hellman Simulator</title>
+    <title>Diffie-Hellman Key Exchange Simulator</title>
     <link rel="stylesheet" href="styles/style.css">
 </head>
 <body>
-    <h1>Diffie-Hellman Key Exchange</h1>
+    <header>
+        <h1>Diffie-Hellman Key Exchange</h1>
+        <p class="subtitle">A visual simulation of secure key exchange over an insecure channel</p>
+    </header>
 
-    <div>
-        <h3>Inputs</h3>
+    <main>
+        <!-- Section 1: Public Parameters -->
+        <section class="card parameters-section">
+            <h2>1. Public Parameters</h2>
+            <p class="section-desc">These values are agreed upon publicly and known to everyone (including potential eavesdroppers)</p>
+            <div class="input-group">
+                <div class="input-field">
+                    <label for="p">Prime Number (p)</label>
+                    <input type="number" id="p" placeholder="e.g., 23" min="2">
+                    <span class="hint">Must be a prime number</span>
+                </div>
+                <div class="input-field">
+                    <label for="g">Generator (g)</label>
+                    <input type="number" id="g" placeholder="e.g., 5" min="2">
+                    <span class="hint">Must be less than p</span>
+                </div>
+            </div>
+        </section>
 
-        <label for="prime">Prime (p):</label><br><br>
-        <input type="number" id="p"><br><br>
+        <!-- Section 2: Private Keys -->
+        <section class="card private-keys-section">
+            <h2>2. Private Keys</h2>
+            <p class="section-desc">Each party selects a secret number that never gets transmitted</p>
+            <div class="parties-container">
+                <div class="party alice">
+                    <h3>Alice</h3>
+                    <div class="input-field">
+                        <label for="alicePrivate">Private Key (a)</label>
+                        <input type="number" id="alicePrivate" placeholder="e.g., 6" min="1">
+                    </div>
+                    <div class="formula">
+                        Computes: A = g<sup>a</sup> mod p
+                    </div>
+                </div>
+                <div class="party bob">
+                    <h3>Bob</h3>
+                    <div class="input-field">
+                        <label for="bobPrivate">Private Key (b)</label>
+                        <input type="number" id="bobPrivate" placeholder="e.g., 15" min="1">
+                    </div>
+                    <div class="formula">
+                        Computes: B = g<sup>b</sup> mod p
+                    </div>
+                </div>
+            </div>
+        </section>
 
-        <label for="generator">Generator (g):</label><br><br>
-        <input type="number" id="g"><br><br>
+        <!-- Action Buttons -->
+        <section class="actions-section">
+            <button id="generateKeys" class="btn btn-primary">
+                <span class="btn-icon">&#128273;</span> Generate Public Keys
+            </button>
+            <button id="generateSecret" class="btn btn-secondary" disabled>
+                <span class="btn-icon">&#128274;</span> Compute Shared Secret
+            </button>
+            <button id="reset" class="btn btn-outline">
+                <span class="btn-icon">&#8635;</span> Reset
+            </button>
+        </section>
 
-        <label for="alicePrivate">Alice's Private Key (a):</label><br><br>
-        <input type="number" id="alicePrivate"><br><br> 
+        <!-- Section 3: Public Key Exchange -->
+        <section class="card exchange-section" id="exchangeSection" style="display: none;">
+            <h2>3. Public Key Exchange</h2>
+            <p class="section-desc">Alice and Bob exchange their public keys over the insecure channel</p>
+            <div class="exchange-visual">
+                <div class="party alice">
+                    <div class="key-box">
+                        <span class="key-label">Alice's Public Key (A)</span>
+                        <span class="key-value" id="alicePublic"></span>
+                        <span class="key-formula">A = <span class="var-g">g</span><sup class="var-a">a</sup> mod <span class="var-p">p</span></span>
+                    </div>
+                </div>
+                <div class="exchange-arrows">
+                    <div class="arrow arrow-right">&#10230;</div>
+                    <div class="arrow arrow-left">&#10232;</div>
+                </div>
+                <div class="party bob">
+                    <div class="key-box">
+                        <span class="key-label">Bob's Public Key (B)</span>
+                        <span class="key-value" id="bobPublic"></span>
+                        <span class="key-formula">B = <span class="var-g">g</span><sup class="var-b">b</sup> mod <span class="var-p">p</span></span>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-        <label for="bobPrivate">Bob's Private Key (b):</label><br><br>
-        <input type="number" id="bobPrivate"><br><br>
-    </div>
+        <!-- Section 4: Shared Secret Computation -->
+        <section class="card secret-section" id="secretSection" style="display: none;">
+            <h2>4. Shared Secret Computation</h2>
+            <p class="section-desc">Both parties compute the same shared secret independently</p>
+            <div class="parties-container">
+                <div class="party alice">
+                    <div class="computation-box">
+                        <span class="comp-label">Alice computes:</span>
+                        <span class="comp-formula">s = B<sup>a</sup> mod p</span>
+                        <span class="comp-result" id="aliceComputation"></span>
+                    </div>
+                </div>
+                <div class="party bob">
+                    <div class="computation-box">
+                        <span class="comp-label">Bob computes:</span>
+                        <span class="comp-formula">s = A<sup>b</sup> mod p</span>
+                        <span class="comp-result" id="bobComputation"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="shared-secret-result">
+                <span class="result-icon">&#128274;</span>
+                <span class="result-label">Shared Secret</span>
+                <span class="result-value" id="secret"></span>
+                <span class="result-note">Both parties now share this secret!</span>
+            </div>
+        </section>
 
-    <div>
-        <button id="generateKeys">Generate Keys</button>
-        <button id="generateSecret">Generate Secret Keys</button>
-    </div>
+        <!-- Error Display -->
+        <div id="errorDisplay" class="error-display" style="display: none;"></div>
+    </main>
 
-    <div>
-        <h3>Outputs</h3>
+    <footer>
+        <p>Educational simulation - Not suitable for actual cryptographic use</p>
+    </footer>
 
-        <p>Alice's Public Key (A): <span id="alicePublic"></span></p>
-        <p>Bob's Public Key (B): <span id="bobPublic"></span></p>
-        
-        <p>Shared secret: <span id="secret"></span></p>
-    </div>
-    
     <script src="scripts/app.js"></script>
 </body>
 </html>
