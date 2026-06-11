@@ -22,6 +22,7 @@ A full-stack web application that demonstrates the Diffie-Hellman Key Exchange p
 The Diffie-Hellman Key Exchange is a fundamental protocol in modern cryptography. This simulator provides an interactive, visual demonstration of how two parties (conventionally called Alice and Bob) can agree on a shared secret key without ever directly transmitting it.
 
 **Key Concepts Demonstrated:**
+
 - Public parameter agreement (prime `p` and generator `g`)
 - Private key generation (secret values `a` and `b`)
 - Public key computation and exchange
@@ -88,12 +89,12 @@ Alice                          Bob
 
 ## Tech Stack
 
-| Component | Technology |
-|-----------|------------|
-| Frontend | HTML5, CSS3, Vanilla JavaScript |
-| Backend | Node.js, Express.js |
+| Component    | Technology                          |
+| ------------ | ----------------------------------- |
+| Frontend     | React 18, Vite, React-Bootstrap     |
+| Backend      | Node.js, Express.js                 |
 | Cryptography | BigInt-based modular exponentiation |
-| Architecture | RESTful API |
+| Architecture | RESTful API                         |
 
 ## Features
 
@@ -107,6 +108,7 @@ Alice                          Bob
 ## API Documentation
 
 ### Base URL
+
 ```
 http://localhost:5000/api/dh
 ```
@@ -114,12 +116,15 @@ http://localhost:5000/api/dh
 ### Endpoints
 
 #### 1. Health Check
+
 ```http
 GET /test
 ```
+
 Returns: `"server working"`
 
 #### 2. Generate Public Keys
+
 ```http
 POST /generate-public
 Content-Type: application/json
@@ -133,6 +138,7 @@ Content-Type: application/json
 ```
 
 **Response (200 OK):**
+
 ```json
 {
   "A": "8",
@@ -145,6 +151,7 @@ Content-Type: application/json
 ```
 
 **Error Response (400 Bad Request):**
+
 ```json
 {
   "error": "Generator (g) must be less than prime (p)"
@@ -152,6 +159,7 @@ Content-Type: application/json
 ```
 
 #### 3. Generate Shared Secret
+
 ```http
 POST /generate-secret
 Content-Type: application/json
@@ -164,6 +172,7 @@ Content-Type: application/json
 ```
 
 **Response (200 OK):**
+
 ```json
 {
   "sharedSecret": "2"
@@ -180,6 +189,7 @@ Content-Type: application/json
 ### Installation
 
 1. **Clone the repository**
+
    ```bash
    git clone <repository-url>
    cd diffie-hellman-simulator
@@ -190,25 +200,51 @@ Content-Type: application/json
    npm install
    ```
 
-3. **Start the backend server**
-   ```bash
-   node server/server.js
-   ```
-   Server will start on `http://localhost:5000`
+### Running Locally
 
-4. **Open the frontend**
-   Open `client/index.html` in your web browser, or serve it with a static file server:
-   ```bash
-   npx serve client
-   ```
+**Development Mode** (hot-reload frontend):
+
+```bash
+# Terminal 1: Start the backend
+npm start
+# Server runs on http://localhost:5000
+
+# Terminal 2: Start the Vite dev server
+npm run dev
+# Frontend runs on http://localhost:5173
+# API requests proxy to http://localhost:5000
+```
+
+**Production Build**:
+
+```bash
+# Build the React frontend
+npm run build
+# Output: client/dist/
+
+# Start backend
+npm start
+# Serve client/dist/ as static files (configure as needed)
+```
 
 ### Development
 
-- **Backend**: `server/server.js`
-- **Frontend**: `client/index.html`
-- **API Routes**: `server/routes/dhRoutes.js`
-- **Controller**: `server/controller/dhController.js`
-- **Math Utilities**: `server/utils/dhMath.js`
+**Backend:**
+
+- Entry point: `server/server.js`
+- API Routes: `server/routes/dhRoutes.js`
+- Controllers: `server/controller/dhController.js`
+- Math Utilities: `server/utils/dhMath.js`
+
+**Frontend (React + Vite):**
+
+- App root: `client/src/App.jsx` (state & orchestration)
+- Entry: `client/src/main.jsx` (Vite bootstrap)
+- Step components: `client/src/components/` (ParameterStep, PrivateKeysStep, ExchangeStep, SecretStep)
+- Reusable components: `client/src/components/PartyPanel.jsx`, `OutputCard.jsx`
+- Validation logic: `client/src/utils/validation.js`
+- Constants: `client/src/constants.js`
+- Styles: `client/src/app.css`
 
 ## Example Usage
 
@@ -216,14 +252,15 @@ Content-Type: application/json
 
 Using the classic small example for demonstration:
 
-| Parameter | Value | Description |
-|-----------|-------|-------------|
-| p | 23 | Prime number |
-| g | 5 | Generator |
-| a | 6 | Alice's private key |
-| b | 15 | Bob's private key |
+| Parameter | Value | Description         |
+| --------- | ----- | ------------------- |
+| p         | 23    | Prime number        |
+| g         | 5     | Generator           |
+| a         | 6     | Alice's private key |
+| b         | 15    | Bob's private key   |
 
 **Results:**
+
 - Alice's public key (A): `5^6 mod 23 = 8`
 - Bob's public key (B): `5^15 mod 23 = 19`
 - Shared secret: `19^6 mod 23 = 8^15 mod 23 = 2`
@@ -257,22 +294,34 @@ curl -X POST http://localhost:5000/api/dh/generate-secret \
 ```
 diffie-hellman-simulator/
 ├── client/
-│   ├── index.html          # Main HTML structure
-│   ├── styles/
-│   │   └── style.css       # Stylesheet with responsive design
-│   └── scripts/
-│       └── app.js          # Frontend logic and API integration
+│   ├── index.html              # Vite entry point
+│   ├── src/
+│   │   ├── main.jsx            # React bootstrap
+│   │   ├── App.jsx             # Main app component & state
+│   │   ├── app.css             # Global styles
+│   │   ├── constants.js        # Shared data (primes, API URL)
+│   │   ├── components/
+│   │   │   ├── ParameterStep.jsx
+│   │   │   ├── PrivateKeysStep.jsx
+│   │   │   ├── ExchangeStep.jsx
+│   │   │   ├── SecretStep.jsx
+│   │   │   ├── PartyPanel.jsx
+│   │   │   └── OutputCard.jsx
+│   │   └── utils/
+│   │       └── validation.js   # Input validation & parsing
+│   ├── assets/                 # Static assets
+│   └── vite.config.mjs         # Vite config with API proxy
 ├── server/
-│   ├── server.js           # Express server entry point
+│   ├── server.js               # Express server entry point
 │   ├── routes/
-│   │   └── dhRoutes.js     # API route definitions
+│   │   └── dhRoutes.js         # API route definitions
 │   ├── controller/
-│   │   └── dhController.js # Request handlers with validation
+│   │   └── dhController.js     # Request handlers with validation
 │   └── utils/
-│       └── dhMath.js       # Modular exponentiation & prime checking
-├── package.json            # Project dependencies
-├── README.md               # This file
-└── .gitignore              # Git ignore rules
+│       └── dhMath.js           # Modular exponentiation & prime checking
+├── package.json                # Project dependencies & scripts
+├── README.md                   # This file
+└── .gitignore                  # Git ignore rules
 ```
 
 ## Security Notes
@@ -290,6 +339,7 @@ diffie-hellman-simulator/
 ### For Real Applications:
 
 Use established cryptographic libraries:
+
 - **Node.js**: `crypto` module (built-in) or `tweetnacl`
 - **Python**: `cryptography` library
 - **Java**: `javax.crypto` (built-in)
